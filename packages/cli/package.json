@@ -1,0 +1,23 @@
+{
+  "name": "@simplified/cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "simplified-cli": "./dist/bin/simplified-cli.js"
+  },
+  "scripts": {
+    "clean": "del dist node_modules",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@simplified/shared": "^1.0.0",
+    "commander": "^11.0.0",
+    "dotenv": "^16.3.1",
+    "streamr-client": "^8.5.5"
+  }
+}
