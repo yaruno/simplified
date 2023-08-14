@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@streamr/utils": "^8.5.5",
     "streamr-client": "^8.5.5"
   }
 }
