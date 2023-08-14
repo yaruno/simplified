@@ -1,4 +1,4 @@
-import { createClient } from '@simplified/shared';
+import { CreateClientOptions, createClient } from '@simplified/shared';
 import { Logger } from '@streamr/utils';
 import { Command } from 'commander';
 import { Validator } from '../Validator';
@@ -19,7 +19,12 @@ export const startCommand = new Command('start')
 	.addOption(streamIdOption)
 	.action(async (options: Options) => {
 		logger.info('Starting Validator...');
-		const client = createClient(options.privateKey, options.devNetwork);
+
+		const createClientOptions: CreateClientOptions = {
+			devNetwork: options.devNetwork
+		}
+
+		const client = await createClient(options.privateKey, createClientOptions);
 		const stream = await client.getStream(options.streamId);
 
 		const validator = new Validator(client, stream);

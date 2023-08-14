@@ -146,8 +146,8 @@ export class Recovery {
 				progress.isComplete = true;
 
 				if (this.progress.isComplete) {
-					await this.stop();
 					logger.info('Successfully complete Recovery');
+					await this.stop();
 				}
 				break;
 			}

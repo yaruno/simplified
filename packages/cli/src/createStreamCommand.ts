@@ -1,4 +1,4 @@
-import { createClient } from '@simplified/shared';
+import { CreateClientOptions, createClient } from '@simplified/shared';
 import { Logger } from '@streamr/utils';
 import { Command } from 'commander';
 import { StreamPermission } from 'streamr-client';
@@ -19,7 +19,12 @@ export const createStreamCommand = new Command('create-stream')
 	.addOption(streamIdOption)
 	.action(async (options: Options) => {
 		logger.info('Creating Stream...');
-		const client = createClient(options.privateKey, options.devNetwork);
+
+		const createClientOptions: CreateClientOptions = {
+			devNetwork: options.devNetwork
+		}
+
+		const client = await createClient(options.privateKey, createClientOptions);
 		const stream = await client.getOrCreateStream({
 			id: `/${options.streamId}`,
 		});

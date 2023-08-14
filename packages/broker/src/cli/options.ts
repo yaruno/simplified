@@ -7,6 +7,12 @@ export const devNetworkOption = new Option(
 	.env('DEV_NETWORK')
 	.default(false);
 
+export const externalIpOption = new Option(
+	'--external-ip <ip>',
+	'External IP address'
+)
+	.env('EXTERNAL_IP')
+
 export const privateKeyOption = new Option(
 	'--private-key <private_key>',
 	'Private Key'
