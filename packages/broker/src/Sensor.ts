@@ -1,5 +1,8 @@
 import { Measurement } from '@simplified/protocol';
 import { StreamPublisher } from '@simplified/shared';
+import { Logger } from '@streamr/utils';
+
+const logger = new Logger(module);
 
 const INTERVAL = 1000;
 
@@ -15,6 +18,7 @@ export class Sensor {
 	}
 
 	public async start() {
+		logger.info('Started');
 		this.timer = setInterval(this.onTimer.bind(this), INTERVAL);
 	}
 
@@ -23,6 +27,7 @@ export class Sensor {
 			clearInterval(this.timer);
 			this.timer = undefined;
 		}
+		logger.info('Stopped');
 	}
 
 	private async onTimer() {

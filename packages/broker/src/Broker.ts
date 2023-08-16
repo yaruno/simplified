@@ -26,6 +26,11 @@ export class Broker {
     this.sensor = new Sensor(uuid(), this.streamPublisher);
     this.cache = new Cache(this.client, this.stream);
     this.recovery = new Recovery(this.client, this.stream, this.streamPublisher, this.cache);
+
+    this.cache.on('full', () => Promise.all([
+      this.cache.stop(),
+      this.sensor.stop(),
+    ]));
   }
 
   public async start() {

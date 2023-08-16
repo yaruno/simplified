@@ -1,10 +1,14 @@
 import { SystemMessage, SystemMessageType } from '@simplified/protocol';
 import { StreamSubscriber } from '@simplified/shared';
+import { Logger } from '@streamr/utils';
+import { EventEmitter } from 'events';
 import { MessageMetadata, Stream, StreamrClient } from 'streamr-client';
+
+const logger = new Logger(module);
 
 const LIMIT = 10000;
 
-export class Cache {
+export class Cache extends EventEmitter {
 	private streamSubscriber: StreamSubscriber;
 
 	private records: {
@@ -16,6 +20,8 @@ export class Cache {
 		private readonly client: StreamrClient,
 		private readonly stream: Stream,
 	) {
+		super();
+
 		this.streamSubscriber = new StreamSubscriber(
 			this.client,
 			this.stream
@@ -23,11 +29,13 @@ export class Cache {
 	}
 
 	public async start() {
+		logger.info('Started');
 		await this.streamSubscriber.subscribe(this.onMessage.bind(this));
 	}
 
 	public async stop() {
 		await this.streamSubscriber.unsubscribe();
+		logger.info('Stopped');
 	}
 
 	private async onMessage(content: unknown, metadata: MessageMetadata) {
@@ -43,6 +51,8 @@ export class Cache {
 
 		if (this.records.length > LIMIT) {
 			this.records.splice(0, this.records.length - LIMIT);
+			logger.info('Cache is full');
+			this.emit('full');
 		}
 	}
 
