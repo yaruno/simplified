@@ -42,7 +42,9 @@ export class Recovery {
 			`Received RecoveryRequest: ${JSON.stringify(recoveryRequest)}`
 		);
 
-		await this.processRequest(recoveryRequest.requestId);
+		setTimeout(async () => {
+			await this.processRequest(recoveryRequest.requestId);
+		}, 1000)
 	}
 
 	private async processRequest(requestId: string) {
