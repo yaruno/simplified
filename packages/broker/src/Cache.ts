@@ -51,7 +51,6 @@ export class Cache extends EventEmitter {
 
 		if (this.records.length > LIMIT) {
 			this.records.splice(0, this.records.length - LIMIT);
-			logger.info('Cache is full');
 			this.emit('full');
 		}
 	}
