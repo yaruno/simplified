@@ -42,10 +42,10 @@ export class Recovery {
 			`Received RecoveryRequest: ${JSON.stringify(recoveryRequest)}`
 		);
 
-		await this.processRequet(recoveryRequest.requestId);
+		await this.processRequest(recoveryRequest.requestId);
 	}
 
-	private async processRequet(requestId: string) {
+	private async processRequest(requestId: string) {
 		const cacheRecords = this.cache.get(0);
 
 		const payload: [SystemMessage, MessageMetadata][] = [];
