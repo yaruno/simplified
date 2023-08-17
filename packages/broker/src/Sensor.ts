@@ -4,7 +4,9 @@ import { Logger } from '@streamr/utils';
 
 const logger = new Logger(module);
 
-const INTERVAL = 1000;
+const INTERVAL_FAST = 50;
+const INTERVAL_SLOW = 1000;
+const THRESHOLD = 2000;
 
 export class Sensor {
 	private timer?: NodeJS.Timeout;
@@ -17,9 +19,9 @@ export class Sensor {
 		//
 	}
 
-	public async start() {
-		logger.info('Started');
-		this.timer = setInterval(this.onTimer.bind(this), INTERVAL);
+	public async start(interval: number = INTERVAL_FAST) {
+		logger.info('Started', { interval });
+		this.timer = setInterval(this.onTimer.bind(this), interval);
 	}
 
 	public async stop() {
@@ -38,5 +40,11 @@ export class Sensor {
 		});
 		this.counter++;
 		await this.streamPublisher.publish(measurement.serialize());
+
+		if (this.counter === THRESHOLD) {
+			logger.info('Threshold reached. Switching to slower interval', { THRESHOLD });
+			this.stop();
+			this.start(INTERVAL_SLOW);
+		}
 	}
 }
