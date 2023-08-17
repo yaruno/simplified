@@ -16,24 +16,17 @@ const DEV_NETWORK_CONFIG: StreamrClientConfig = {
 export const createClient = async (privateKey: string, options: CreateClientOptions): Promise<StreamrClient> => {
   logger.info('Creating StreamrClient with options:', { options });
 
-  let config: StreamrClientConfig = {
-    logLevel: 'trace',
-    auth: {
-      privateKey,
-    },
-  };
+  let config: StreamrClientConfig = options.devNetwork
+    ? DEV_NETWORK_CONFIG
+    : { network: {} };
 
-  if (options.devNetwork) {
-    config = {
-      ...DEV_NETWORK_CONFIG,
-      ...config
-    }
-  }
+  config.logLevel = 'trace';
+  config.auth = { privateKey };
+
+  config.network!.webrtcSendBufferMaxMessageCount = 5000;
 
   if (options.externalIp) {
-    config.network = {
-      externalIp: options.externalIp
-    }
+    config.network!.externalIp = options.externalIp;
   }
 
   const client = new StreamrClient(config);
