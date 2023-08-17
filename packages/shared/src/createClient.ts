@@ -29,6 +29,7 @@ export const createClient = async (privateKey: string, options: CreateClientOpti
     config.network!.externalIp = options.externalIp;
   }
 
+  logger.info('Creating StreamrClient with config:', { config });
   const client = new StreamrClient(config);
   logger.info('StreamrClient created:', { address: await client.getAddress() });
 
