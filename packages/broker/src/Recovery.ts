@@ -71,10 +71,11 @@ export class Recovery {
 		payload: [SystemMessage, MessageMetadata][]
 	) {
 		const recoveryResponse = new RecoveryResponse({ requestId, payload });
+		const recoveryResponseSeralized = recoveryResponse.serialize();
 
-		await this.streamPublisher.publish(recoveryResponse.serialize());
+		await this.streamPublisher.publish(recoveryResponseSeralized);
 		logger.info(
-			`Published RecoveryResponse: ${JSON.stringify({ requestId: recoveryResponse.requestId })}`
+			`Published RecoveryResponse: ${JSON.stringify({ requestId: recoveryResponse.requestId, bytes: recoveryResponseSeralized.length })}`
 		);
 	}
 
