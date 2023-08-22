@@ -120,11 +120,12 @@ export class Recovery {
 					return;
 				}
 
-				logger.info(
-					`Processing RecoveryResponse ${JSON.stringify({
+				logger.info('Processing RecoveryResponse',
+					{
 						publisherId: metadata.publisherId,
+						seqNum: recoveryResponse.seqNum,
 						payloadLength: recoveryResponse.payload.length,
-					})}`
+					}
 				);
 
 				for await (const [msg, msgMetadata] of recoveryResponse.payload) {
@@ -142,9 +143,11 @@ export class Recovery {
 				}
 
 				logger.info(
-					`Processing RecoveryComplete ${JSON.stringify({
+					'Processing RecoveryComplete',
+					{
 						publisherId: metadata.publisherId,
-					})}`
+						seqNum: recoveryComplete.seqNum,
+					}
 				);
 
 				// if no recovery messages received

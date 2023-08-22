@@ -50,40 +50,54 @@ export class Recovery {
 	private async processRequest(requestId: string) {
 		const cacheRecords = this.cache.get(0);
 
+		let seqNum: number = 0;
 		const payload: [SystemMessage, MessageMetadata][] = [];
 		for await (const cacheRecord of cacheRecords) {
 			payload.push([cacheRecord.message, cacheRecord.metadata]);
 
 			if (payload.length === PAYLOAD_LIMIT) {
-				await this.sendResponse(requestId, payload.splice(0));
+				await this.sendResponse(requestId, seqNum++, payload.splice(0));
 			}
 		}
 
 		if (payload.length > 0) {
-			await this.sendResponse(requestId, payload);
+			await this.sendResponse(requestId, seqNum++, payload);
 		}
 
-		await this.sendComplete(requestId);
+		await this.sendComplete(requestId, seqNum);
 	}
 
 	private async sendResponse(
 		requestId: string,
+		seqNum: number,
 		payload: [SystemMessage, MessageMetadata][]
 	) {
-		const recoveryResponse = new RecoveryResponse({ requestId, payload });
+		const recoveryResponse = new RecoveryResponse({ requestId, seqNum, payload });
 		const recoveryResponseSeralized = recoveryResponse.serialize();
 
 		await this.streamPublisher.publish(recoveryResponseSeralized);
 		logger.info(
-			`Published RecoveryResponse: ${JSON.stringify({ requestId: recoveryResponse.requestId, bytes: recoveryResponseSeralized.length })}`
+			'Published RecoveryResponse',
+			{
+				requestId: recoveryResponse.requestId,
+				seqNum: recoveryResponse.seqNum,
+				bytes: recoveryResponseSeralized.length
+			}
 		);
 	}
 
-	private async sendComplete(requestId: string) {
-		const recoveryComplete = new RecoveryComplete({ requestId });
-		await this.streamPublisher.publish(recoveryComplete.serialize());
+	private async sendComplete(requestId: string, seqNum: number) {
+		const recoveryComplete = new RecoveryComplete({ requestId, seqNum });
+		const recoveryCompleteSeralized = recoveryComplete.serialize();
+
+		await this.streamPublisher.publish(recoveryCompleteSeralized);
 		logger.info(
-			`Published RecoveryComplete: ${JSON.stringify({ requestId: recoveryComplete.requestId })}`
+			'Published RecoveryComplete',
+			{
+				requestId: recoveryComplete.requestId,
+				seqNum: recoveryComplete.seqNum,
+				bytes: recoveryCompleteSeralized.length
+			}
 		);
 	}
 }
