@@ -15,7 +15,7 @@ import {
 } from 'streamr-client';
 import { v4 as uuid } from 'uuid';
 
-const DELAY = 30 * 1000;
+const DELAY = 60 * 1000;
 
 const MESSAGE_TYPES = [
 	SystemMessageType.RecoveryResponse,
