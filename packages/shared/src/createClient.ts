@@ -25,6 +25,7 @@ export const createClient = async (privateKey: string, options: CreateClientOpti
 
   config.network!.webrtcSendBufferMaxMessageCount = 10000;
   config.network!.webrtcDisallowPrivateAddresses = false;
+  config.network!.webrtcMaxMessageSize = 1048576
 
   if (options.externalIp) {
     config.network!.externalIp = options.externalIp;
