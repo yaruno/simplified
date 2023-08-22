@@ -33,6 +33,7 @@ const BROKERS = [
 
 interface RecoveryProgress {
 	timestamp?: number;
+	lastSeqNum: number;
 	isComplete: boolean;
 }
 
@@ -70,12 +71,13 @@ export class Recovery {
 	public get progress(): RecoveryProgress {
 		const result: RecoveryProgress = {
 			timestamp: Number.MAX_SAFE_INTEGER,
+			lastSeqNum: -1,
 			isComplete: true,
 		};
 
 		for (const [_, progress] of this.progresses) {
 			if (progress.timestamp === undefined) {
-				return { isComplete: false };
+				return { isComplete: false, lastSeqNum: -1 };
 			}
 
 			result.timestamp = Math.min(result.timestamp!, progress.timestamp);
@@ -93,7 +95,7 @@ export class Recovery {
 		await this.publisher.publish(recoveryRequest.serialize());
 
 		for (const broker of BROKERS) {
-			this.progresses.set(broker, { isComplete: false });
+			this.progresses.set(broker, { isComplete: false, lastSeqNum: -1 });
 		}
 	}
 
@@ -108,7 +110,7 @@ export class Recovery {
 
 		let progress = this.progresses.get(metadata.publisherId);
 		if (!progress) {
-			progress = { isComplete: false };
+			progress = { isComplete: false, lastSeqNum: -1 };
 			this.progresses.set(metadata.publisherId, progress);
 		}
 
@@ -128,11 +130,17 @@ export class Recovery {
 					}
 				);
 
+				if (recoveryResponse.seqNum - progress.lastSeqNum !== 1) {
+					logger.error("RecoveryResponse has unexpected seqNum", { seqNum: recoveryResponse.seqNum })
+					break;
+				}
+
 				for await (const [msg, msgMetadata] of recoveryResponse.payload) {
 					await this.onSystemMessage(msg, msgMetadata as MessageMetadata);
 					progress.timestamp = metadata.timestamp;
 				}
 
+				progress.lastSeqNum = recoveryResponse.seqNum;
 				break;
 			}
 			case SystemMessageType.RecoveryComplete: {
@@ -149,6 +157,11 @@ export class Recovery {
 						seqNum: recoveryComplete.seqNum,
 					}
 				);
+
+				if (recoveryComplete.seqNum - progress.lastSeqNum !== 1) {
+					logger.error("RecoveryComplete has unexpected seqNum", { seqNum: recoveryComplete.seqNum })
+					break;
+				}
 
 				// if no recovery messages received
 				if (progress.timestamp === undefined) {
