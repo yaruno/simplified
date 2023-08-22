@@ -60,8 +60,8 @@ export class Recovery {
 		await this.subscriber.subscribe(this.onMessage.bind(this));
 
 		logger.info(`Waiting for ${DELAY}ms to form peer connections...`);
-		//setTimeout(() => this.sendRecoveryRequest(), DELAY);
-		setInterval(() => this.sendRecoveryRequest(), DELAY)
+		setTimeout(() => this.sendRecoveryRequest(), DELAY);
+		//setInterval(() => this.sendRecoveryRequest(), DELAY)
 	}
 
 	public async stop() {

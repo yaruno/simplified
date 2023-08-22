@@ -4,7 +4,7 @@ import { Logger } from '@streamr/utils';
 import { MessageMetadata, Stream, StreamrClient } from 'streamr-client';
 import { Cache } from './Cache';
 
-const PAYLOAD_LIMIT = 500;
+const PAYLOAD_LIMIT = 250;
 
 const logger = new Logger(module);
 
@@ -64,11 +64,13 @@ export class Recovery {
 			payload.push([cacheRecord.message, cacheRecord.metadata]);
 
 			if (payload.length === PAYLOAD_LIMIT) {
+				await this.waitAWhile(250)
 				await this.sendResponse(requestId, payload.splice(0));
 			}
 		}
 
 		if (payload.length > 0) {
+			await this.waitAWhile(250)
 			await this.sendResponse(requestId, payload);
 		}
 
@@ -82,7 +84,7 @@ export class Recovery {
 	) {
 		const recoveryResponse = new RecoveryResponse({ requestId, payload });
 		const recoveryResponseSeralized = recoveryResponse.serialize();
-		await this.waitAWhile(250)
+		//await this.waitAWhile(250)
 		await this.streamPublisher.publish(recoveryResponseSeralized);
 		console.log("Sending a recovery response at: ", Date.now())
 		logger.info(
