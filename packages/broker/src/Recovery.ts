@@ -4,7 +4,9 @@ import { Logger } from '@streamr/utils';
 import { MessageMetadata, Stream, StreamrClient } from 'streamr-client';
 import { Cache } from './Cache';
 
-const PAYLOAD_LIMIT = 1000;
+const PAYLOAD_LIMIT = 500;
+
+const DELAY = 150
 
 const logger = new Logger(module);
 
@@ -22,6 +24,10 @@ export class Recovery {
 			this.stream
 		);
 	}
+
+	private randomIntFromInterval(min: number , max: number ): number { // min and max included 
+		return Math.floor(Math.random() * (max - min + 1) + min)
+	  }
 
 	public async start() {
 		await this.streamSubscriber.subscribe(this.onMessage.bind(this));
@@ -64,13 +70,13 @@ export class Recovery {
 			payload.push([cacheRecord.message, cacheRecord.metadata]);
 
 			if (payload.length === PAYLOAD_LIMIT) {
-				await this.waitAWhile(250)
+				await this.waitAWhile(DELAY + this.randomIntFromInterval(20,50))
 				await this.sendResponse(requestId, payload.splice(0));
 			}
 		}
 
 		if (payload.length > 0) {
-			await this.waitAWhile(250)
+			await this.waitAWhile(DELAY + this.randomIntFromInterval(20,50))
 			await this.sendResponse(requestId, payload);
 		}
 
