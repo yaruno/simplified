@@ -15,7 +15,7 @@ import {
 } from 'streamr-client';
 import { v4 as uuid } from 'uuid';
 
-const DELAY = 2 * 60 * 1000;
+const DELAY = 30 * 1000;
 
 const MESSAGE_TYPES = [
 	SystemMessageType.RecoveryResponse,
@@ -60,7 +60,8 @@ export class Recovery {
 		await this.subscriber.subscribe(this.onMessage.bind(this));
 
 		logger.info(`Waiting for ${DELAY}ms to form peer connections...`);
-		setTimeout(() => this.sendRecoveryRequest(), DELAY);
+		//setTimeout(() => this.sendRecoveryRequest(), DELAY);
+		setInterval(() => this.sendRecoveryRequest(), DELAY)
 	}
 
 	public async stop() {
@@ -91,6 +92,7 @@ export class Recovery {
 
 		logger.info(`Sending RecoveryRequest ${JSON.stringify({ requestId: recoveryRequest.requestId })}`);
 		await this.publisher.publish(recoveryRequest.serialize());
+		console.log("Recovery request sent at: ", Date.now())
 
 		for (const broker of BROKERS) {
 			this.progresses.set(broker, { isComplete: false });

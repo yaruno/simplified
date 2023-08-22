@@ -47,11 +47,20 @@ export class Recovery {
 		}, 1000)
 	}
 
+	private async waitAWhile(time: number): Promise<void> {
+		return new Promise(resolve => {
+		  setTimeout(resolve, time)
+		})
+	  }
+
+	//Todo: throttle also sending a response
 	private async processRequest(requestId: string) {
 		const cacheRecords = this.cache.get(0);
+		console.log("Records in cache: ", cacheRecords.length)
 
 		const payload: [SystemMessage, MessageMetadata][] = [];
 		for await (const cacheRecord of cacheRecords) {
+			
 			payload.push([cacheRecord.message, cacheRecord.metadata]);
 
 			if (payload.length === PAYLOAD_LIMIT) {
@@ -66,14 +75,16 @@ export class Recovery {
 		await this.sendComplete(requestId);
 	}
 
+	//Todo: throttle also sending a response
 	private async sendResponse(
 		requestId: string,
 		payload: [SystemMessage, MessageMetadata][]
 	) {
 		const recoveryResponse = new RecoveryResponse({ requestId, payload });
 		const recoveryResponseSeralized = recoveryResponse.serialize();
-
+		await this.waitAWhile(250)
 		await this.streamPublisher.publish(recoveryResponseSeralized);
+		console.log("Sending a recovery response at: ", Date.now())
 		logger.info(
 			`Published RecoveryResponse: ${JSON.stringify({ requestId: recoveryResponse.requestId, bytes: recoveryResponseSeralized.length })}`
 		);

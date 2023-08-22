@@ -14,13 +14,19 @@ export class StreamPublisher {
 	public async publish(message: unknown) {
 		const partition = this.counter % this.partitions;
 
-		await this.client.publish(
-			{
-				id: this.stream.id,
-				partition,
-			},
-			message
-		);
+		try {
+
+			await this.client.publish(
+				{
+					id: this.stream.id,
+					partition,
+				},
+				message
+			);
+		}
+		catch(e) {
+			console.log('something went horribly wrong while publishing', e)
+		}
 
 		this.counter++;
 	}
