@@ -1,5 +1,5 @@
 import { Measurement } from '@simplified/protocol';
-import { StreamPublisher } from '@simplified/shared';
+import { BroadbandPublisher } from '@simplified/shared';
 import { Logger } from '@streamr/utils';
 
 const logger = new Logger(module);
@@ -14,7 +14,7 @@ export class Sensor {
 
 	constructor(
 		private readonly id: string,
-		private readonly streamPublisher: StreamPublisher
+		private readonly publisher: BroadbandPublisher
 	) {
 		//
 	}
@@ -39,7 +39,7 @@ export class Sensor {
 			temperature: 100 + this.counter % 50,
 		});
 		this.counter++;
-		await this.streamPublisher.publish(measurement.serialize());
+		await this.publisher.publish(measurement.serialize());
 
 		if (this.counter === THRESHOLD) {
 			logger.info('Threshold reached. Switching to slower interval', { THRESHOLD });

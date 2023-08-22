@@ -5,7 +5,7 @@ import {
 	Subscription,
 } from 'streamr-client';
 
-export class StreamSubscriber {
+export class BroadbandSubscriber {
 	private readonly subscriptions: Subscription[] = [];
 
 	constructor(

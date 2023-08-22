@@ -1,17 +1,17 @@
 import { SystemMessage, SystemMessageType } from '@simplified/protocol';
-import { StreamSubscriber } from '@simplified/shared';
+import { BroadbandSubscriber } from '@simplified/shared';
 import { MessageMetadata, Stream, StreamrClient } from 'streamr-client';
 import { Recovery } from './Recovery';
 
 export class Listener {
-  private readonly subscriber: StreamSubscriber;
+  private readonly subscriber: BroadbandSubscriber;
   private readonly recovery: Recovery;
 
   constructor(
     private readonly client: StreamrClient,
     private readonly stream: Stream,
   ) {
-    this.subscriber = new StreamSubscriber(this.client, this.stream);
+    this.subscriber = new BroadbandSubscriber(this.client, this.stream);
     this.recovery = new Recovery(
       this.client,
       this.stream,

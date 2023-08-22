@@ -1,5 +1,5 @@
 import { RecoveryComplete, RecoveryRequest, RecoveryResponse, SystemMessage, SystemMessageType } from '@simplified/protocol';
-import { StreamPublisher, StreamSubscriber } from '@simplified/shared';
+import { BroadbandPublisher, BroadbandSubscriber } from '@simplified/shared';
 import { Logger } from '@streamr/utils';
 import { MessageMetadata, Stream, StreamrClient } from 'streamr-client';
 import { Cache } from './Cache';
@@ -9,26 +9,26 @@ const PAYLOAD_LIMIT = 500;
 const logger = new Logger(module);
 
 export class Recovery {
-	private readonly streamSubscriber: StreamSubscriber;
+	private readonly subscriber: BroadbandSubscriber;
 
 	constructor(
 		private readonly client: StreamrClient,
 		private readonly stream: Stream,
-		private readonly streamPublisher: StreamPublisher,
+		private readonly publisher: BroadbandPublisher,
 		private readonly cache: Cache,
 	) {
-		this.streamSubscriber = new StreamSubscriber(
+		this.subscriber = new BroadbandSubscriber(
 			this.client,
 			this.stream
 		);
 	}
 
 	public async start() {
-		await this.streamSubscriber.subscribe(this.onMessage.bind(this));
+		await this.subscriber.subscribe(this.onMessage.bind(this));
 	}
 
 	public async stop() {
-		await this.streamSubscriber.unsubscribe();
+		await this.subscriber.unsubscribe();
 	}
 
 	private async onMessage(message: unknown) {
@@ -75,7 +75,7 @@ export class Recovery {
 		const recoveryResponse = new RecoveryResponse({ requestId, seqNum, payload });
 		const recoveryResponseSeralized = recoveryResponse.serialize();
 
-		await this.streamPublisher.publish(recoveryResponseSeralized);
+		await this.publisher.publish(recoveryResponseSeralized);
 		logger.info(
 			'Published RecoveryResponse',
 			{
@@ -90,7 +90,7 @@ export class Recovery {
 		const recoveryComplete = new RecoveryComplete({ requestId, seqNum });
 		const recoveryCompleteSeralized = recoveryComplete.serialize();
 
-		await this.streamPublisher.publish(recoveryCompleteSeralized);
+		await this.publisher.publish(recoveryCompleteSeralized);
 		logger.info(
 			'Published RecoveryComplete',
 			{

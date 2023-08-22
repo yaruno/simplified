@@ -1,6 +1,6 @@
 import { Stream, StreamrClient } from 'streamr-client';
 
-export class StreamPublisher {
+export class BroadbandPublisher {
 	private partitions: number;
 	private counter: number = 0;
 

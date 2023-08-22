@@ -1,5 +1,5 @@
 import { SystemMessage, SystemMessageType } from '@simplified/protocol';
-import { StreamSubscriber } from '@simplified/shared';
+import { BroadbandSubscriber } from '@simplified/shared';
 import { Logger } from '@streamr/utils';
 import { EventEmitter } from 'events';
 import { MessageMetadata, Stream, StreamrClient } from 'streamr-client';
@@ -9,7 +9,7 @@ const logger = new Logger(module);
 const LIMIT = 10000;
 
 export class Cache extends EventEmitter {
-	private streamSubscriber: StreamSubscriber;
+	private subscriber: BroadbandSubscriber;
 
 	private records: {
 		message: SystemMessage;
@@ -22,7 +22,7 @@ export class Cache extends EventEmitter {
 	) {
 		super();
 
-		this.streamSubscriber = new StreamSubscriber(
+		this.subscriber = new BroadbandSubscriber(
 			this.client,
 			this.stream
 		);
@@ -30,11 +30,11 @@ export class Cache extends EventEmitter {
 
 	public async start() {
 		logger.info('Started');
-		await this.streamSubscriber.subscribe(this.onMessage.bind(this));
+		await this.subscriber.subscribe(this.onMessage.bind(this));
 	}
 
 	public async stop() {
-		await this.streamSubscriber.unsubscribe();
+		await this.subscriber.unsubscribe();
 		logger.info('Stopped');
 	}
 

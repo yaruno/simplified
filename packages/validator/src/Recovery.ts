@@ -5,7 +5,7 @@ import {
 	SystemMessage,
 	SystemMessageType,
 } from '@simplified/protocol';
-import { StreamPublisher, StreamSubscriber } from '@simplified/shared';
+import { BroadbandPublisher, BroadbandSubscriber } from '@simplified/shared';
 import { Logger } from '@streamr/utils';
 import {
 	EthereumAddress,
@@ -15,7 +15,7 @@ import {
 } from 'streamr-client';
 import { v4 as uuid } from 'uuid';
 
-const DELAY = 2 * 60 * 1000;
+const DELAY = 15 * 1000;
 
 const MESSAGE_TYPES = [
 	SystemMessageType.RecoveryResponse,
@@ -40,8 +40,8 @@ const logger = new Logger(module);
 
 export class Recovery {
 	private requestId?: string;
-	private publisher: StreamPublisher
-	private subscriber: StreamSubscriber;
+	private publisher: BroadbandPublisher
+	private subscriber: BroadbandSubscriber;
 
 	private progresses: Map<EthereumAddress, RecoveryProgress> = new Map();
 
@@ -50,8 +50,8 @@ export class Recovery {
 		private readonly stream: Stream,
 		private readonly onSystemMessage: (systemMessage: SystemMessage, metadata: MessageMetadata) => Promise<void>
 	) {
-		this.publisher = new StreamPublisher(this.client, this.stream);
-		this.subscriber = new StreamSubscriber(this.client, this.stream);
+		this.publisher = new BroadbandPublisher(this.client, this.stream);
+		this.subscriber = new BroadbandSubscriber(this.client, this.stream);
 	}
 
 	public async start() {
