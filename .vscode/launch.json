@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\packages\\validator\\dist\\bin\\simplified-validator.js",
+            "args": [
+                "start",
+                "--stream-id 0xa156eda7dcd689ac725ce9595d4505bf28256454/simplified",
+                "--private-key 297882d5156658f9ba55d2269287c47d7c502557580fe1d2a55b82da25ee8272"
+            ]
+        }
+    ]
+}
