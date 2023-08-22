@@ -4,8 +4,8 @@ import { Logger } from '@streamr/utils';
 
 const logger = new Logger(module);
 
-const INTERVAL_FAST = 250;
-const INTERVAL_SLOW = 250;
+const INTERVAL_FAST = 50;
+const INTERVAL_SLOW = 50;
 const THRESHOLD = 0;
 
 export class Sensor {
