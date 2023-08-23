@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "npm run clean --workspaces && del node_modules",
     "build": "npm run build --workspaces",
+    "test-1": "node ./packages/broker/dist/bin/simplified-broker.js start --private-key 255a0b1286c414eca18896d5535090de8e078c6086db90809c616a3d6f344c42 --stream-id 0x678a27270f3a2250d0fb72012cd590bf75265d2e/foo/bar",
     "broker-1": "node ./packages/broker/dist/bin/simplified-broker.js start --private-key bb00000000000000000000000000000000000000000000000000000000000001 --stream-id 0xa156eda7dcd689ac725ce9595d4505bf28256454/simplified",
     "broker-2": "node ./packages/broker/dist/bin/simplified-broker.js start --private-key bb00000000000000000000000000000000000000000000000000000000000002 --stream-id 0xa156eda7dcd689ac725ce9595d4505bf28256454/simplified",
     "broker-3": "node ./packages/broker/dist/bin/simplified-broker.js start --private-key bb00000000000000000000000000000000000000000000000000000000000003 --stream-id 0xa156eda7dcd689ac725ce9595d4505bf28256454/simplified",
