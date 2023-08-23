@@ -29,10 +29,10 @@ export const startCommand = new Command('start')
 
 		const client = await createClient(options.privateKey, createClientOptions);
 
-		/*setInterval(async () => {
+		setInterval(async () => {
 			const info = await client.getDiagnosticInfo()
 			console.log(JSON.stringify(info))
-		}, 10 * 1000) // every 10 sec */
+		}, 10 * 1000) // every 10 sec 
 
 		const stream = await client.getStream(options.streamId);
 

@@ -70,13 +70,13 @@ export class Recovery {
 			payload.push([cacheRecord.message, cacheRecord.metadata]);
 
 			if (payload.length === PAYLOAD_LIMIT) {
-				await this.waitAWhile(this.randomIntFromInterval(20,30))
+				await this.waitAWhile(this.randomIntFromInterval(200,300))
 				await this.sendResponse(requestId, payload.splice(0));
 			}
 		}
 
 		if (payload.length > 0) {
-			await this.waitAWhile(this.randomIntFromInterval(20,30))
+			await this.waitAWhile(this.randomIntFromInterval(200,300))
 			await this.sendResponse(requestId, payload);
 		}
 
