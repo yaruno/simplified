@@ -23,9 +23,11 @@ export const createClient = async (privateKey: string, options: CreateClientOpti
   config.logLevel = 'trace';
   config.auth = { privateKey };
 
-  config.network!.webrtcSendBufferMaxMessageCount = 50000;
+  config.network!.webrtcSendBufferMaxMessageCount = 500000;
   config.network!.webrtcDisallowPrivateAddresses = false;
   config.network!.webrtcMaxMessageSize = 1048576
+  config.gapFill = true
+  config.gapFillTimeout = 15000
 
   if (options.externalIp) {
     config.network!.externalIp = options.externalIp;
