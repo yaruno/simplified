@@ -32,7 +32,7 @@ export const startCommand = new Command('start')
 
 		setInterval(async () => {
 			const info = await client.getDiagnosticInfo()
-			console.log(JSON.stringify(info))
+			console.log(JSON.stringify(info?.nodeToNode))
 		}, 3 * 1000) // every 10 sec
 
 		const validator = new Validator(client, stream);
